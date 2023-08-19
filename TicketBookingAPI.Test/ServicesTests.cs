@@ -61,12 +61,16 @@ namespace TicketBookingAPI.Test
                 var movie = new Movie { Title = "Test Movie", Description = "Test Description", Genre = "Test Genre" };
                 context.Movies.Add(movie);
 
-                var theater = new Theater { Name = "Test Theater", SeatingArrangement = new List<Row> { new Row() {NumberOfSeats = 2, RowNumber = 1 } } };
+                var theater = new Theater { Name = "Test Theater", SeatingArrangement = new List<Row>() { new Row() { RowNumber = 1, NumberOfSeats = 3} } };
                 context.Theaters.Add(theater);
-
-                var showtime = new Showtime { MovieId = movie.Id, ShowDateTime = DateTime.Now};
-                theater.Showtimes.Add(showtime);
                 context.SaveChanges();
+
+                //var showtime = new Showtime { MovieId = movie.Id, ShowDateTime = DateTime.Now};
+
+                var showTimeService = new ShowtimeService(context);
+                //theater.Showtimes.Add(showtime);
+                var showtime = await showTimeService.AddShowtimeAsync(theater.Id, movie.Id, DateTime.Now);
+                //context.SaveChanges();
 
                 var service = new ReservationService(context);
 
@@ -76,6 +80,7 @@ namespace TicketBookingAPI.Test
                 // Assert
                 Assert.NotNull(reservation);
                 Assert.Equal(1, context.Reservations.Count());
+                Assert.Equal(1, reservation.ReservedSeats.Count());
             }
         }
 
