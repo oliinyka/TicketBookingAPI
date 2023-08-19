@@ -65,12 +65,8 @@ namespace TicketBookingAPI.Test
                 context.Theaters.Add(theater);
                 context.SaveChanges();
 
-                //var showtime = new Showtime { MovieId = movie.Id, ShowDateTime = DateTime.Now};
-
                 var showTimeService = new ShowtimeService(context);
-                //theater.Showtimes.Add(showtime);
                 var showtime = await showTimeService.AddShowtimeAsync(theater.Id, movie.Id, DateTime.Now);
-                //context.SaveChanges();
 
                 var service = new ReservationService(context);
 
